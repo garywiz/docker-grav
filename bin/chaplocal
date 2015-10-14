@@ -1,0 +1,112 @@
+#!/bin/bash
+# Little script to run a chaperone docker container in the local directory
+# for development or other purposes.
+
+DEFAULT_IMAGE="chapdev/chaperone-baseimage"
+VERSTR="chaplocal version 1.31"
+
+if [ "$CHAP_SERVICE_NAME" != "" ]; then
+   echo "The 'chaplocal' script is not intended to be run inside a container,"
+   echo "but for use on the docker host to set up local development directories."
+   echo "Maybe you meant 'get-chaplocal'?"
+   exit 1
+fi
+
+if [ "$1" == '-V' ]; then
+   echo $VERSTR
+   exit
+fi
+
+if [ "$1" == '-d' ]; then
+   runopts="-d"
+   shift
+else
+   runopts=""
+fi
+
+IMAGE="$2"
+if [ $# == 1 ]; then
+   IMAGE=$DEFAULT_IMAGE
+elif [ $# != 2 ]; then
+   echo ""
+   echo "Usage: chaplocal [-d] local-apps-dir [image-name]"
+   echo ""
+   echo "Runs the specified chaperone image and uses local-apps-dir for the apps"
+   echo "directory.  Creates a script in local-apps-dir called run.sh so you can"
+   echo "run an interactive (default) or daemon instance."
+   echo ""
+   echo "Will run all container processes under the current user account with the"
+   echo "local drive mounted as a shared volume in the container."
+   echo ""
+   echo "If not specified, then the image '$DEFAULT_IMAGE' will be used."
+   echo ""
+   exit
+fi
+
+APPSBASE="$1"
+LOCALROOT=$PWD
+
+APPSDIR=$LOCALROOT/$APPSBASE
+MOUNT=/home
+
+# Assure we're running in /home or /Users
+if [ "${PWD:0:7}" == "/Users/" ]; then
+  MOUNT=/Users
+elif [ "${PWD:0:6}" != "/home/" ]; then
+  echo "Sorry, this script is designed to operate only within the /home or /Users directory"
+  echo "of your host. :-("
+  exit 1
+fi
+
+if [[ "$IMAGE" != *":"* ]]; then
+  IMAGE=$IMAGE:latest
+fi
+
+if [ "`docker inspect $IMAGE >/dev/null 2>&1 && echo yes`" != "yes" ]; then
+  echo ""
+  echo Cannot find local docker image: $IMAGE
+  echo ""
+  echo You may want to pull the image with \"docker pull $IMAGE\" 
+  echo and then try again.
+  exit 1
+fi
+
+# Extract our local UID/GID
+myuid=`id -u`
+mygid=`id -g`
+
+# Copy the boilerplate apps directory into this development directory where it can be
+# worked on easily.
+if [ ! -d $APPSDIR ]; then
+    echo ""
+    echo Extracting /apps default directory into $APPSDIR ...
+    mkdir $APPSDIR
+    SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
+    docker run -i --rm=true -v $APPSDIR:/appsdir$SELINUX_FLAG $IMAGE \
+       --user root --config /apps/chaperone.d --task clone-apps /appsdir $myuid:$mygid
+    echo "You can customize the contents of $APPSDIR to tailor it for your application,"
+    echo "then use it as a template for your production image."
+    echo ""
+    if [ -x $APPSDIR/bin/chaplocal ]; then
+       THEIRVER=`$APPSDIR/bin/chaplocal -V`
+       if [ "$THEIRVER" != "$VERSTR" ]; then
+	   echo "WARNING: This image uses a different version of chaplocal."
+	   echo "         Ours:   $VERSTR"
+	   echo "         Image:  $THEIRVER"
+	   echo ""
+       fi
+    fi
+    echo Executing run.sh within $APPSDIR ...
+    echo ""
+elif [ ! -f $APPSDIR/run.sh ]; then
+    echo "$APPSDIR already exists but doesn't seem to be one I created (no run.sh in there)"
+    echo "You're on your own"
+    exit 1
+else
+    echo ""
+    echo $APPSDIR already exists.
+    echo Executing run.sh within $APPSDIR ...
+    echo ""
+fi
+
+$APPSDIR/run.sh $runopts

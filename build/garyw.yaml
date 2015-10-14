@@ -1,0 +1,8 @@
+email: garyw@blueseastech.com.au
+access:
+  admin:
+    login: true
+    super: true
+fullname: 'Gary Wisniewski'
+title: Superguy
+hashed_password: $2y$10$zm2mtWE31wSbPP9rXHUn.uXPXirlFyytIq6kEqw36GD2oGU93n39O
