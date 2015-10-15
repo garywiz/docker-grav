@@ -12,7 +12,6 @@ if [ "$port" != "" -a "$HTTPD_SERVER_NAME" != "" ]; then
   echo "Your Grav site is running at http://$CONFIG_EXT_HOSTNAME:$port/"
   echo ""
   echo "The Grav 'gpm' and 'grav' commands are available at the prompt."
-  echo ""
 fi
 
 [ "$EMACS" == "t" ] && stty -echo

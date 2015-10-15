@@ -70,6 +70,7 @@ SELINUX_FLAG=$(sestatus 2>/dev/null | fgrep -q enabled && echo :z)
 docker run $options -v $MOUNT:$MOUNT$SELINUX_FLAG $PORTOPT \
    -e CONFIG_EXT_HOSTNAME="$EXT_HOSTNAME" \
    -e CONFIG_EXT_SSL_HOSTNAME="$EXT_SSL_HOSTNAME" \
+   -e CONFIG_LOGGING=file \
    -e EMACS=$EMACS \
    $IMAGE \
    --create $USER:$APPS/chaperone.d --config $APPS/chaperone.d $* $shellopt

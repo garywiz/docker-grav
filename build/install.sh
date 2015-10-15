@@ -15,7 +15,7 @@ tar cf - --exclude ./build \
          --exclude ./run.sh . | (cd /apps; tar xf -)
 
 # update the version information
-mv /setup/build/new_version.inc /apps/etc/version.inc
+sed "s/^GRAV_VERSION=.*/GRAV_VERSION=${GRAV_VERSION}/" </setup/build/new_version.inc >/apps/etc/version.inc
 
 # / is normally the user home directory for self-contained and attached-storage modes
 ln -sf /apps/bash.bashrc /.bashrc

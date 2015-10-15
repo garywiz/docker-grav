@@ -2,8 +2,8 @@
 The %(DEFAULT_LAUNCHER) script is a quick-start for launching
 the %(PARENT_IMAGE) image.
 
-When you launch the container, there will be a default sample site
-visible at http://%(CONFIG_EXT_HOSTNAME)%(CONFIG_EXT_HTTP_PORT:|80||:%(CONFIG_EXT_HTTP_PORT))/
+When you launch the container, a fully configured working Grav instnace will be
+available at http://%(CONFIG_EXT_HOSTNAME)%(CONFIG_EXT_HTTP_PORT:|80||:%(CONFIG_EXT_HTTP_PORT))/
 
 To get this message again:
    docker run -i --rm %(PARENT_IMAGE) --task get-help LAUNCHER

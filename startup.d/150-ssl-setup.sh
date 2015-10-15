@@ -4,13 +4,15 @@
 # CONFIG_EXT_SSL_HOSTNAME is defined.   You'll need to reconfigure your webserver with
 # actual keys if you want to serve https properly.
 
-certpem=$VAR_DIR/certs/ssl-cert-snakeoil.pem
-certkey=$VAR_DIR/certs/ssl-cert-snakeoil.key
-
 # Only if we have CONFIG_EXT_SSL_HOSTNAME...
 
 if [ "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
+
     # Generate testing certs if they aren't here.
+
+    certpem=$VAR_DIR/certs/ssl-cert-grav-$CONFIG_EXT_SSL_HOSTNAME.crt
+    certkey=$VAR_DIR/certs/ssl-cert-grav-$CONFIG_EXT_SSL_HOSTNAME.key
+
     if [ ! -f $certpem ]; then
 	template="$APPS_DIR/etc/ssleay.cnf"
 
@@ -32,13 +34,6 @@ if [ "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
 	chmod 640 $certkey
 
 	rm -rf $TMPFILE
-    fi
-
-    # Enable apache SSL...
-    # If this FAILS it is probably because (a) SECURE_ROOT was set to true and
-    # (b) the SSL hostname was added after the apps directory was already initailized.
-    if [ "$HTTPD_SERVER_NAME" == 'apache' -a "$CONFIG_EXT_SSL_HOSTNAME" != "" ]; then
-      sudo a2enmod ssl
     fi
 
 fi
