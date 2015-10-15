@@ -4,7 +4,9 @@ Grav is a fast, simple, flexible web-platform.  This is a Docker image that make
 
 To learn more about Grav, see the [Grav Website](http://learn.getgrav.org/basics/what-is-grav).
 
-NOTE: This is an early-release of this container.   See the "Known Issues" section at the very bottom of this page for more information about things we know don't work.
+This image is [also available on Docker Hub](https://hub.docker.com/r/garywiz/docker-grav/) so you can pull it directly from there.  There's no need to build it yourself.
+
+**NOTE**: This is an early-release of this container.   See the "Known Issues" section at the very bottom of this page for more information about things we know don't work.
 
 The following documentation tells you how to use the `docker-grav` image, a lean full-featured Docker image that has the following features:
 
