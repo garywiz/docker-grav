@@ -86,7 +86,7 @@ server {
 	listen 8443;
  
 	ssl on;
-	ssl_certificate %(VAR_DIR)/certs/ssl-cert-grav-%(CONFIG_EXT_SSL_HOSTNAME).pem;
+	ssl_certificate %(VAR_DIR)/certs/ssl-cert-grav-%(CONFIG_EXT_SSL_HOSTNAME).crt;
 	ssl_certificate_key %(VAR_DIR)/certs/ssl-cert-grav-%(CONFIG_EXT_SSL_HOSTNAME).key;
 	
 	root %(NGINX_SITES_DIR)/grav;
