@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd $APPS_DIR/www/grav
+exec bin/grav $*
+

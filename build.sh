@@ -29,5 +29,5 @@ fi
 sed "s/^IMAGE_NAME=.*/IMAGE_NAME=${prodimage/\//\\\/}/" <etc/version.inc >build/new_version.inc
 
 # Do the build
-tar czh --exclude '*~' --exclude 'var/*' . | docker build -t $prodimage -f build/Dockerfile -
+tar czh --exclude '*~' --exclude 'var/*' --exclude 'www/grav' . | docker build -t $prodimage -f build/Dockerfile -
 rm build/new_version.inc

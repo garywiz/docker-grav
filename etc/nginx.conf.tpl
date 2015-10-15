@@ -1,3 +1,5 @@
+# DO NOT MODIFY THIS FILE.  IT WILL BE REGENERATED EVERY TIME THE CONTAINER STARTS
+
 # This file is processed by envcp.  See apps/etc/start_nginx.sh
 
 # Interestingly, Nginx will attempt to write to /var/log/nginx/error.log no matter WHAT you do, so

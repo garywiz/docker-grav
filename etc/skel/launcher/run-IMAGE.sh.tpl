@@ -7,21 +7,32 @@
 IMAGE="%(PARENT_IMAGE)"
 INTERACTIVE_SHELL="/bin/bash"
 
-# You can specify the external host and ports for Nginx here.  These variables
-# are also passed into the container so that any application code which does redirects
-# can use these if need be.
+# You can specify the external host and ports for Grav here.  Note that the HTTPS site
+# will be started only if you uncomment EXT_SSL_HOSTNAME below (the certificate needs a hostname)
 
 EXT_HOSTNAME=%(CONFIG_EXT_HOSTNAME:-localhost)
 EXT_HTTP_PORT=%(CONFIG_EXT_HTTP_PORT:-8080)
 EXT_HTTPS_PORT=%(CONFIG_EXT_HTTPS_PORT:-8443)
 
 # Uncomment to enable SSL and specify the certificate hostname
+
 #EXT_SSL_HOSTNAME=secure.example.com
+
+# Upon start-up, the container will create a new administrative user if one does not already
+# exist with the given name.   To disable this, set ADMIN_USER to the string 'none'.
+
+ADMIN_USER=admin
+ADMIN_PASSWORD=ChangeMe
+ADMIN_EMAIL="nobody@nowhere.com"
+
+# Docker port options
 
 PORTOPT="-p $EXT_HTTP_PORT:8080 -p $EXT_HTTPS_PORT:8443"
 
 # If this directory exists and is writable, then it will be used
-# as attached storage
+# as attached storage.
+# You can change STORAGE_LOCATION to anything you wish other than the default below.
+
 STORAGE_LOCATION="$PWD/%(IMAGE_BASENAME)-storage"
 STORAGE_USER="$USER"
 
@@ -36,9 +47,13 @@ else
 fi
 
 docker_opt="$docker_opt \
+  -e EMACS=$EMACS \
   -e CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME \
   -e CONFIG_EXT_HTTPS_PORT=$EXT_HTTPS_PORT \
-  -e CONFIG_EXT_HTTP_PORT=$EXT_HTTP_PORT"
+  -e CONFIG_EXT_HTTP_PORT=$EXT_HTTP_PORT \
+  -e CONFIG_ADMIN_USER=$ADMIN_USER \
+  -e CONFIG_ADMIN_PASSWORD=$ADMIN_PASSWORD \
+  -e CONFIG_ADMIN_EMAIL=$ADMIN_EMAIL"
 
 [ "$EXT_SSL_HOSTNAME" != "" ] && docker_opt="$docker_opt -e CONFIG_EXT_SSL_HOSTNAME=$EXT_SSL_HOSTNAME"
 

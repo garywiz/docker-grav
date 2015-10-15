@@ -17,6 +17,9 @@ tar cf - --exclude ./build \
 # update the version information
 mv /setup/build/new_version.inc /apps/etc/version.inc
 
+# / is normally the user home directory for self-contained and attached-storage modes
+ln -sf /apps/bash.bashrc /.bashrc
+
 # PHP EXTENSIONS!
 #
 # Add any php extensions your application needs.  Alpine Linux is VERY granular and
@@ -30,6 +33,9 @@ apk --update add \
     php-gd \
     php-curl \
     php-openssl \
+    php-xml \
+    php-mcrypt \
+    php-sockets \
     php-zip
 
 mkdir -p /setup/grav; cd /setup/grav
@@ -38,7 +44,16 @@ cd /apps/www
 unzip /setup/grav/grav-admin-v$GRAV_VERSION.zip
 mv grav-admin grav
 
-cp /setup/build/garyw.yaml /apps/www/grav/user/accounts
+# Move any writable directories to have -dist extensions.  See ../startup.d/050-grav-setup.sh for how this
+# works when a container is started
+cd grav
+
+mv cache cache-dist
+mv backup backup-dist
+mv logs logs-dist
+mv user user-dist; mv user-dist/plugins plugins-sticky
+mv assets assets-dist
+mv images images-dist
 
 # Add additional setup commands for your production image here, if any.
 # ...

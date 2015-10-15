@@ -21,3 +21,5 @@ See 010-start.conf for the logging configuration.
 All of this can be changed, and this environment is not dictated by chaperone.
 It's just a starting point defined by chaperone-baseimage and chaperone-lamp
 to get things started.
+
+Known issues

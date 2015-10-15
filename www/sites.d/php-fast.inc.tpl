@@ -1,3 +1,5 @@
+# DO NOT MODIFY THIS FILE.  IT WILL BE REGENERATED EVERY TIME THE CONTAINER STARTS
+
 location ~ \.php$ {
         	fastcgi_param  QUERY_STRING       $query_string;
         	fastcgi_param  REQUEST_METHOD     $request_method;

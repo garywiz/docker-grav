@@ -9,8 +9,12 @@ echo ""
 
 port=${CONFIG_EXT_HTTP_PORT:-${CONFIG_EXT_PORT:-}}
 if [ "$port" != "" -a "$HTTPD_SERVER_NAME" != "" ]; then
-  echo "The default '$HTTPD_SERVER_NAME' site is running at http://$CONFIG_EXT_HOSTNAME:$port/"
+  echo "Your Grav site is running at http://$CONFIG_EXT_HOSTNAME:$port/"
+  echo ""
+  echo "The Grav 'gpm' and 'grav' commands are available at the prompt."
   echo ""
 fi
+
+[ "$EMACS" == "t" ] && stty -echo
 
 alias ls='ls --color=none'
