@@ -1,8 +1,27 @@
 #!/bin/bash
 #Extracted from %(PARENT_IMAGE) on %(`date`)
 
-# Run as interactive: ./%(DEFAULT_LAUNCHER) [options]
-#          or daemon: ./%(DEFAULT_LAUNCHER) -d [options]
+# Usage is displayed if you use -h
+
+usage() {
+  echo "Usage: %(DEFAULT_LAUNCHER) [-d] [-p port#] [-h]"
+  echo "       Run Grav from $IMAGE as a daemon (with -d) or interactively (the default)."
+  echo ""
+  echo "  -d            Run as daemon (otherwise interactive)"
+  echo "  -p port#      Specify port number to expose Grav server (default 8080)"
+  echo "  -s dirpath    Specifies the path to an optional storage directory where ALL persistent"
+  echo "                Grav files and settings will be stored.  This allows you to keep your site"
+  echo "                separate from the container so you can easily upgrade the container software."
+  echo "                By default, this script looks to see if $STORAGE_LOCATION exists, and"
+  echo "                if it does, it will be used.  You can override that default with this switch."
+  echo "  -n name       Name the container 'name' instead of the default name invented by Docker."
+  echo ""
+  echo "HTTPS options (SSL):"
+  echo "  -H sslhost    Specify the SSL host name and enable the SSL server.  If specified, Grav"
+  echo "                will also be available using https on the port specified by -P"
+  echo "  -P sslport#   Specify SSL port number (default 8443)"
+  exit
+}
 
 IMAGE="%(PARENT_IMAGE)"
 INTERACTIVE_SHELL="/bin/bash"
@@ -25,10 +44,6 @@ ADMIN_USER=admin
 ADMIN_PASSWORD=ChangeMe
 ADMIN_EMAIL="nobody@nowhere.com"
 
-# Docker port options
-
-PORTOPT="-p $EXT_HTTP_PORT:8080 -p $EXT_HTTPS_PORT:8443"
-
 # If this directory exists and is writable, then it will be used
 # as attached storage.
 # You can change STORAGE_LOCATION to anything you wish other than the default below.
@@ -36,17 +51,54 @@ PORTOPT="-p $EXT_HTTP_PORT:8080 -p $EXT_HTTPS_PORT:8443"
 STORAGE_LOCATION="$PWD/%(IMAGE_BASENAME)-storage"
 STORAGE_USER="$USER"
 
+# Parse the command line and override any options provided above
+
+docker_opt=""
+
+while getopts ":-dp:n:s:H:P:" o; do
+  case "$o" in
+    d)
+      INTERACTIVE_SHELL=""
+      ;;
+    n)
+      docker_opt="$docker_opt --name $OPTARG"
+      ;;
+    p)
+      EXT_HTTP_PORT="$OPTARG"
+      ;;      
+    P)
+      EXT_HTTPS_PORT="$OPTARG"
+      ;;      
+    H)
+      EXT_SSL_HOSTNAME="$OPTARG"
+      ;;      
+    s)
+      # The path must exist, and we need the full path if it's relative...
+      [ -d "$OPTARG" ] && STORAGE_LOCATION="$(cd "$(dirname "$OPTARG")"; pwd)/$(basename "$OPTARG")"
+      ;;
+    -) # first long option terminates so remaining options go to Chaperone
+      break
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+# Docker port options (derive from above)
+
+PORTOPT="-p $EXT_HTTP_PORT:8080 -p $EXT_HTTPS_PORT:8443"
+
 # The rest should be OK...
 
-if [ "$1" == '-d' ]; then
-  shift
-  docker_opt="-d $PORTOPT"
-  INTERACTIVE_SHELL=""
+if [ "$INTERACTIVE_SHELL" != "" ]; then
+  docker_opt="$docker_opt -t -i -e TERM=$TERM --rm=true"
 else
-  docker_opt="-t -i -e TERM=$TERM --rm=true $PORTOPT"
+  docker_opt="-d"
 fi
 
-docker_opt="$docker_opt \
+docker_opt="$docker_opt $PORTOPT \
   -e EMACS=$EMACS \
   -e CONFIG_EXT_HOSTNAME=$EXT_HOSTNAME \
   -e CONFIG_EXT_HTTPS_PORT=$EXT_HTTPS_PORT \

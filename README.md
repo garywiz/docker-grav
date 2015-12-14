@@ -43,20 +43,44 @@ The `run-docker-grav.sh` script is designed to be self-documenting and you can e
 
     $ docker run -i --rm garywiz/docker-grav --task get-help
 
+## Using `run-docker-grav.sh`
+
+If you extract the default launcher (see above), it can serve as the basis for your own start-up script.  But, it also has some default options built-in to make it easy to tailor startup without having to modify the script.  You can use the `-h` option to get a list of options:
+
+    $ ./run-docker-grav.sh -h
+    Usage: run-docker-grav.sh [-d] [-p port#] [-h]
+           Run Grav from garywiz/docker-grav as a daemon (with -d) or 
+           interactively (the default).
+    
+      -d            Run as daemon (otherwise interactive)
+      -p port#      Specify port number to expose Grav server (default 8080)
+      -s dirpath    Specifies the path to an optional storage directory where 
+                    ALL persistent Grav files and settings will be stored.  This allows
+                    you to keep your site separate from the container so you can easily
+                    upgrade the container software. By default, this script looks to see 
+                    if ../docker-grav-storage exists, and if it does, it will be used.  
+                    You can override that default with this switch.
+      -n name       Name the container 'name' instead of the default name invented by Docker.
+    
+    HTTPS options (SSL):
+      -H sslhost    Specify the SSL host name and enable the SSL server.  If specified, Grav
+                will also be available using https on the port specified by -P
+      -P sslport#   Specify SSL port number (default 8443)
+
 ## Customizing Grav
 
 If you run the Grav container using the above launcher but omit the `-d` switch, you'll be place into the container in an interactive shell where you can use the `grav` and `gpm` command to customize Grav by adding users, themes, or plugins:
 
-	$ ./run-docker-grav.sh
-	Oct 15 22:08:28 e265699abf5f chaperone[1]: system will be killed when '/bin/bash' exits
-	Now running inside container. Directory is: /apps
+        $ ./run-docker-grav.sh
+        Oct 15 22:08:28 e265699abf5f chaperone[1]: system will be killed when '/bin/bash' exits
+        Now running inside container. Directory is: /apps
 
-	Your Grav site is running at http://localhost:8080/
-	
-	The Grav 'gpm' and 'grav' commands are available at the prompt.
-	bash-4.3$ gpm
-	Grav Package Manager version 0.9.45
-	...
+        Your Grav site is running at http://localhost:8080/
+        
+        The Grav 'gpm' and 'grav' commands are available at the prompt.
+        bash-4.3$ gpm
+        Grav Package Manager version 0.9.45
+        ...
 
 You can use `gpm` [as described here in the Grav documentation](http://learn.getgrav.org/advanced/grav-cli) to install new features or browse around a the installation.   The container will run and be usable until you exit, at which point it will be destroyed.    This is generally a good way to experiment.
 
@@ -65,7 +89,7 @@ You can use `gpm` [as described here in the Grav documentation](http://learn.get
 Once you've configured attached storage, your entire Grav configuration will be located in the attached storage `var/grav` subdirectory.   There you will find the `system.yaml` and `site.yaml` file.  You can change these and re-run your container and they'll persist even if they container is destroyed.
 
 See the [Grav Configuration documentation](http://learn.getgrav.org/basics/grav-configuration) for more information about how to modify these files.
-	
+        
 ## Full Option List
 
 If you want to invent your own start-up, or are using an orchestration tool, here is a quick view of all the configuration options piled into one command along with their defaults:
@@ -133,7 +157,7 @@ Here is a step-by-step guide.
 This is easy if you're using the provided launcher, as described above.  The first thing to do is run the container once just to initialize the persistent storage directory:
 
     $ mkdir docker-grav-storage
-	$ ./run-docker-grav.sh -d
+        $ ./run-docker-grav.sh -d
     Using attached storage at .../docker-grav-storage
     00e9615bc51d63f9a150186482b3258d1c24b4f21ca0c781ae6e1717d9c97abc
     $
@@ -172,8 +196,6 @@ If your keys are not already in `PEM` format, you may need to convert them using
 Once you've replaced the certificates, you can simply restart the old container, or create a new container using the same attached storage location.  Your new certificate will then be in use.
 
 ## Known Issues
-
-This is a pre-release image and there are some known issues:
 
 * There is no email service installed within the container, so anything which sends email (such as the forgotten password feature) do not currently work.
 * There are many Grav plugins, very few of which have been tested.

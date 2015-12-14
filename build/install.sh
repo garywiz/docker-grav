@@ -1,6 +1,7 @@
 #!/bin/bash
 
-GRAV_VERSION=0.9.45
+# Set in Dockerfile
+#GRAV_VERSION=1.0.0-rc.4
 
 cd /setup
 
@@ -12,10 +13,11 @@ echo copying application files to /apps ...
 tar cf - --exclude ./build \
          --exclude ./build.sh \
     	 --exclude ./www/grav \
+         --exclude ./var \
          --exclude ./run.sh . | (cd /apps; tar xf -)
 
 # update the version information
-sed "s/^GRAV_VERSION=.*/GRAV_VERSION=${GRAV_VERSION}/" </setup/build/new_version.inc >/apps/etc/version.inc
+sed "s/^GRAV_VERSION=.*/GRAV_VERSION=${GRAV_VERSION}/" </setup/etc/version.inc >/apps/etc/version.inc
 
 # / is normally the user home directory for self-contained and attached-storage modes
 ln -sf /apps/bash.bashrc /.bashrc
