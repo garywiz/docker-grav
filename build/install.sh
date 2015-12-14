@@ -43,7 +43,7 @@ apk --update add \
 mkdir -p /setup/grav; cd /setup/grav
 wget https://github.com/getgrav/grav/releases/download/$GRAV_VERSION/grav-admin-v$GRAV_VERSION.zip
 cd /apps/www
-unzip /setup/grav/grav-admin-v$GRAV_VERSION.zip
+unzip -q /setup/grav/grav-admin-v$GRAV_VERSION.zip
 mv grav-admin grav
 
 # Move any writable directories to have -dist extensions.  See ../startup.d/050-grav-setup.sh for how this
