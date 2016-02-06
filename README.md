@@ -112,7 +112,7 @@ Of course, you can customize this set-up exactly like any other Docker run comma
 
 ## Configuring Attached Storage
 
-Using attached storage, you can make choose a location for the Grav user files and configuration so that your entire persistent state is stored outside the container itself.  This makes it easy to update the container to a new version while retaining your existing content and configuration.
+Using attached storage, you can choose a location for the Grav user files and configuration so that your entire persistent state is stored outside the container itself.  This makes it easy to update the container to a new version while retaining your existing content and configuration.
 
 When configuring attached storage, there are two considerations:
 
