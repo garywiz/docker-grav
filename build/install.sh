@@ -30,14 +30,18 @@ ln -sf /apps/bash.bashrc /.bashrc
 # https://pkgs.alpinelinux.org/packages?name=php-%25&repo=all&arch=x86_64&maintainer=all
 
 apk --update add \
-    php-json \
     php-ctype \
-    php-gd \
     php-curl \
-    php-openssl \
-    php-xml \
+    php-dom \
+    php-gd \
+    php-iconv \
+    php-json \
     php-mcrypt \
+    php-openssl \
+    php-posix \
     php-sockets \
+    php-xml \
+    php-xmlreader \
     php-zip
 
 mkdir -p /setup/grav; cd /setup/grav
