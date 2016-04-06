@@ -200,3 +200,20 @@ Once you've replaced the certificates, you can simply restart the old container,
 * There is no email service installed within the container, so anything which sends email (such as the forgotten password feature) do not currently work.
 * There are many Grav plugins, very few of which have been tested.
 * When using attached storage, any newly installed plugins will be stored in attached storage rather inside the image.  The admin plugin and related plugins, however, are stored inside the container so that upgrading the container will upgrade the entire set of administrative plugins as well.
+
+License
+-------
+
+Copyright (c) 2016, Gary J. Wisniewski <garyw@blueseastech.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
