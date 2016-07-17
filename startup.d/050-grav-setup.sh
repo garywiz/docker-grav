@@ -23,7 +23,7 @@ if [ ! -d $VAR_GRAV ]; then
   for sf in $( find . -maxdepth 1 -type d -name '*-dist' ); do
     symlink=${sf/-dist}
     vardest=$VAR_GRAV${symlink/\./}
-    cp -a $sf $vardest
+    cp -dR  $sf $vardest
     dolog "created $vardest"
   done
 
