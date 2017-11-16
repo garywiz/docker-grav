@@ -16,11 +16,25 @@ tar cf - --exclude ./build \
          --exclude ./var \
          --exclude ./run.sh . | (cd /apps; tar xf -)
 
+echo after tar
+
 # update the version information
 sed "s/^GRAV_VERSION=.*/GRAV_VERSION=${GRAV_VERSION}/" </setup/etc/version.inc >/apps/etc/version.inc
 
 # / is normally the user home directory for self-contained and attached-storage modes
 ln -sf /apps/bash.bashrc /.bashrc
+
+
+# Alpine Upgrade
+#
+# In order to keep the binary version of additional packages aligned with
+# the PHP executable itself, upgrade the entire Alpine installation to the
+# latest version.
+
+echo before upgrading alpine
+apk update
+apk upgrade
+echo after upgrading alpine
 
 # PHP EXTENSIONS!
 #
@@ -29,7 +43,7 @@ ln -sf /apps/bash.bashrc /.bashrc
 # install.  You can find the package names here...
 # https://pkgs.alpinelinux.org/packages?name=php-%25&repo=all&arch=x86_64&maintainer=all
 
-apk --update add \
+apk  add --upgrade \
     php-ctype \
     php-curl \
     php-dom \
@@ -42,9 +56,12 @@ apk --update add \
     php-sockets \
     php-xml \
     php-xmlreader \
-    php-zip
+    php-zip \
+    php-apcu
 
 mkdir -p /setup/grav; cd /setup/grav
+
+
 wget https://github.com/getgrav/grav/releases/download/$GRAV_VERSION/grav-admin-v$GRAV_VERSION.zip
 cd /apps/www
 unzip -q /setup/grav/grav-admin-v$GRAV_VERSION.zip
