@@ -80,10 +80,6 @@ mv images images-dist
 
 # Add additional setup commands for your production image here, if any.
 # ...
-# TODO(rjk): Insert an appropriate skeleton thinger.
-# https://igthubgetgrav.org/download/skeletons/striped-site/1.0.3
-#http://getgrav.org/downloads/skeletons#extras
-#https://github.com/getgrav/grav/releases/download/1.3.8/grav-admin-v1.3.8.zip
 
 # Clean up and assure permissions are correct
 
